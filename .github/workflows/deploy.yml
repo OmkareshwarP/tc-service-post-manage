@@ -28,3 +28,12 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/tc-service-post-manage:${{ env.IMAGE_TAG }}
           docker push ${{ secrets.DOCKER_USERNAME }}/tc-service-post-manage:latest
+
+      - name: Trigger Render Deploy Hook
+        run: |
+          echo "Deploying to Render..."
+          SERVICE_JSON=$(curl -# -X POST "$DEPLOY_HOOK_URL")
+          echo "Deployment response received. Extracting relevant details..."
+          echo "$SERVICE_JSON" | jq '{message: .service.message}'
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK }}
