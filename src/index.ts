@@ -6,11 +6,25 @@ import { makeSchema } from 'nexus';
 import * as dotenv from 'dotenv';
 import path from 'path';
 import * as types from './schema/index.js';
-import { getDirname, loadEnv, logData, logError } from './utils/index.js';
+import { getDirname, initializeSentry, loadEnv, logData, logError } from './utils/index.js';
+import { initializeRedis } from './database/redisUtil.js';
+import { initializeMongoDB } from './database/mongoUtil.js';
+import { initializeNeo4j } from './database/neo4jUtil.js';
+import { initializeAstraDB } from './database/astraUtil.js';
+import { initializeAbly } from './utils/ablyUtil.js';
+import { gracefulShutdown } from './utils/shutdownUtil.js';
+import { PostAPI } from './datasources/index.js';
 
 dotenv.config({ path: path.resolve('.env') });
 
 await loadEnv();
+
+initializeSentry();
+initializeRedis();
+initializeMongoDB();
+await initializeNeo4j();
+await initializeAstraDB();
+initializeAbly();
 
 const __dirname = getDirname(import.meta.url);
 
@@ -86,7 +100,9 @@ const { url } = await startStandaloneServer(server, {
       }
     }
     return {
-      dataSources: {},
+      dataSources: {
+        PostAPI,
+      },
       req,
     };
   },
@@ -103,4 +119,16 @@ process.on('unhandledRejection', (reason: any) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 process.on('uncaughtException', (reason: any) => {
   logError('unhandledException', 'unhandledException', 9, reason);
+});
+
+process.on('SIGINT', async () => {
+  // eslint-disable-next-line no-console
+  console.log('🛑 Received SIGINT (CTRL + C)');
+  await gracefulShutdown();
+});
+
+process.on('SIGTERM', async () => {
+  // eslint-disable-next-line no-console
+  console.log('🛑 Received SIGTERM (Docker Stop, Kill Command)');
+  await gracefulShutdown();
 });
