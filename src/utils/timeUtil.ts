@@ -7,4 +7,9 @@ const getCurrentEpochTimestamp = (): number => {
   return +getCurrentTime();
 };
 
-export { getCurrentTime, getCurrentEpochTimestamp };
+const getCurrentEpochTimestampInSeconds = (): number => {
+  const now = Date.now();
+  return Math.floor(now / 1000);
+};
+
+export { getCurrentTime, getCurrentEpochTimestamp, getCurrentEpochTimestampInSeconds };

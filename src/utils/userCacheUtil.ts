@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getMongoDBClient } from '../database/mongoUtil.js';
 import { getKey, getRedisClient } from '../database/redisUtil.js';
+import { IUser } from '../typeDefs.js';
 import { logError } from './loggerUtil.js';
 
-export const getUserInformationByUserId = async (userId: string): Promise<any> => {
+export const getUserInformationByUserId = async (userId: string): Promise<IUser> => {
   try {
     if (!userId) {
       return null;

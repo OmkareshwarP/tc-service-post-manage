@@ -1,3 +1,5 @@
+import { PostType, PostVisibility } from './utils/index.js';
+
 export interface IUser {
   userId: string;
   provider: string;
@@ -14,6 +16,7 @@ export interface IUser {
   profileRejectionReasons: string[];
   createdAt: number;
   updatedAt: number;
+  postCount: number;
 }
 
 export interface BgMessageData {
@@ -37,4 +40,33 @@ export interface AnalyticsEventData {
   actionInputThree?: unknown;
   actionInputFour?: unknown;
   actionInputFive?: unknown;
+}
+
+export interface IPollPost {
+  options: string[];
+  votes: Record<string, number>;
+  startAt: number;
+  endAt: number;
+}
+
+export interface IPost {
+  postId: string;
+  userId: string;
+  content: string;
+  media: string[];
+  postType: PostType;
+  parentPostId?: string;
+  threadParentPostId?: string;
+  repostedPostId?: string;
+  poll?: IPollPost;
+  repostCount: number;
+  engagementScore: number;
+  likes: number;
+  comments: number;
+  bookmarks: number;
+  impressions: number;
+  status: string;
+  postVisibility: PostVisibility;
+  createdAt: number;
+  updatedAt: number;
 }
