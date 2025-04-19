@@ -135,5 +135,47 @@ export const PostQueries = extendType({
         }
       },
     });
+    t.field('checkPostLikeStatus', {
+      type: 'PostLikeStatusResponse',
+      args: {
+        postId: nonNull(stringArg()),
+      },
+      async resolve(_, { postId }, { dataSources, req }) {
+        const token = req.headers.authorization;
+        const user = await AuthUtil().verifyToken(token);
+        try {
+          if (!postId) {
+            return generateResponse(true, 'Something went wrong while validating your request', 'inputParamsValidationFailed', 403, null);
+          }
+
+          const response = await dataSources.PostAPI().checkPostLikeStatus(user.userId, postId);
+          return response;
+        } catch (error) {
+          logError(error.message, 'checkPostLikeStatusError', 5, error, { args: req.body?.variables });
+          return generateResponse(true, `Something went wrong while checking post liked status. We're working on it`, 'checkPostLikeStatusError', 500, null);
+        }
+      },
+    });
+    t.field('checkPostBookmarkStatus', {
+      type: 'PostBookmarkStatusResponse',
+      args: {
+        postId: nonNull(stringArg()),
+      },
+      async resolve(_, { postId }, { dataSources, req }) {
+        const token = req.headers.authorization;
+        const user = await AuthUtil().verifyToken(token);
+        try {
+          if (!postId) {
+            return generateResponse(true, 'Something went wrong while validating your request', 'inputParamsValidationFailed', 403, null);
+          }
+
+          const response = await dataSources.PostAPI().checkPostBookmarkStatus(user.userId, postId);
+          return response;
+        } catch (error) {
+          logError(error.message, 'checkPostBookmarkStatusError', 5, error, { args: req.body?.variables });
+          return generateResponse(true, `Something went wrong while checking post Bookmark status. We're working on it`, 'checkPostBookmarkStatusError', 500, null);
+        }
+      },
+    });
   },
 });

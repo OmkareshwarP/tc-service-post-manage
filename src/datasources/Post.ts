@@ -337,5 +337,35 @@ export const PostAPI = () => {
         throw error;
       }
     },
+
+    async checkPostLikeStatus(userId: string, postId: string) {
+      try {
+        const dbClient = getMongoDBClient();
+        const _likesCollectionName = process.env.LIKES_COLLECTION;
+
+        const likeData = await dbClient.collection(_likesCollectionName).findOne({ userId, postId });
+
+        const isLiked = likeData ? true : false;
+
+        return generateResponse(false, 'Post like status fetched successfully.', '', 200, { isLiked });
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    async checkPostBookmarkStatus(userId: string, postId: string) {
+      try {
+        const dbClient = getMongoDBClient();
+        const _bookmarksCollectionName = process.env.BOOKMARKS_COLLECTION;
+
+        const bookmarkData = await dbClient.collection(_bookmarksCollectionName).findOne({ userId, postId });
+
+        const isBookmarked = bookmarkData ? true : false;
+
+        return generateResponse(false, 'Post bookmark status fetched successfully.', '', 200, { isBookmarked });
+      } catch (error) {
+        throw error;
+      }
+    },
   };
 };

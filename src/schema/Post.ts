@@ -103,3 +103,39 @@ export const UserEngagementPostsResponse = objectType({
     t.nullable.field('data', { type: 'UserEngagementPostsData' });
   },
 });
+
+export const PostLikeStatusData = objectType({
+  name: 'PostLikeStatusData',
+  definition(t) {
+    t.nonNull.boolean('isLiked');
+  },
+});
+
+export const PostLikeStatusResponse = objectType({
+  name: 'PostLikeStatusResponse',
+  definition(t) {
+    t.nonNull.boolean('error');
+    t.nonNull.string('message');
+    t.nonNull.int('statusCode');
+    t.nonNull.string('errorCodeForClient');
+    t.nullable.field('data', { type: 'PostLikeStatusData' });
+  },
+});
+
+export const PostBookmarkStatusData = objectType({
+  name: 'PostBookmarkStatusData',
+  definition(t) {
+    t.nonNull.boolean('isBookmarked');
+  },
+});
+
+export const PostBookmarkStatusResponse = objectType({
+  name: 'PostBookmarkStatusResponse',
+  definition(t) {
+    t.nonNull.boolean('error');
+    t.nonNull.string('message');
+    t.nonNull.int('statusCode');
+    t.nonNull.string('errorCodeForClient');
+    t.nullable.field('data', { type: 'PostBookmarkStatusData' });
+  },
+});
