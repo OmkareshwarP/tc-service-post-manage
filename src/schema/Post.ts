@@ -139,3 +139,21 @@ export const PostBookmarkStatusResponse = objectType({
     t.nullable.field('data', { type: 'PostBookmarkStatusData' });
   },
 });
+
+export const PostRepostStatusData = objectType({
+  name: 'PostRepostStatusData',
+  definition(t) {
+    t.nonNull.boolean('isReposted');
+  },
+});
+
+export const PostRepostStatusResponse = objectType({
+  name: 'PostRepostStatusResponse',
+  definition(t) {
+    t.nonNull.boolean('error');
+    t.nonNull.string('message');
+    t.nonNull.int('statusCode');
+    t.nonNull.string('errorCodeForClient');
+    t.nullable.field('data', { type: 'PostRepostStatusData' });
+  },
+});

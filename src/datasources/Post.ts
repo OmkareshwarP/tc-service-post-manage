@@ -337,7 +337,6 @@ export const PostAPI = () => {
         throw error;
       }
     },
-
     async checkPostLikeStatus(userId: string, postId: string) {
       try {
         const dbClient = getMongoDBClient();
@@ -352,7 +351,6 @@ export const PostAPI = () => {
         throw error;
       }
     },
-
     async checkPostBookmarkStatus(userId: string, postId: string) {
       try {
         const dbClient = getMongoDBClient();
@@ -363,6 +361,34 @@ export const PostAPI = () => {
         const isBookmarked = bookmarkData ? true : false;
 
         return generateResponse(false, 'Post bookmark status fetched successfully.', '', 200, { isBookmarked });
+      } catch (error) {
+        throw error;
+      }
+    },
+    async checkPostRepostStatus(userId: string, postId: string) {
+      try {
+        const session = createNeo4jSession();
+        const neo4jRoot = process.env.NEO4J_ROOT;
+        const postNode = `${neo4jRoot}:${postId}`;
+        let isReposted = false;
+
+        try {
+          const res = await session.run(
+            `MATCH (p:Post {id: $postNode})
+            WHERE p.userId = $userId AND (p.postType = "repost" OR p.postType = "quotePost")
+            RETURN p LIMIT 1`,
+            { postNode, userId }
+          );
+          if (res.records.length > 0) {
+            isReposted = true;
+          }
+        } catch (error) {
+          throw error;
+        } finally {
+          await session.close();
+        }
+
+        return generateResponse(false, 'Post repost status fetched successfully.', '', 200, { isReposted });
       } catch (error) {
         throw error;
       }
