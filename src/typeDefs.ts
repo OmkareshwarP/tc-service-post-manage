@@ -59,8 +59,8 @@ export interface IPost {
   threadParentPostId?: string;
   repostedPostId?: string;
   poll?: IPollPost;
-  repostCount: number;
   engagementScore: number;
+  reposts: number;
   likes: number;
   comments: number;
   bookmarks: number;
