@@ -177,5 +177,26 @@ export const PostQueries = extendType({
         }
       },
     });
+    t.field('checkPostRepostStatus', {
+      type: 'PostRepostStatusResponse',
+      args: {
+        postId: nonNull(stringArg()),
+      },
+      async resolve(_, { postId }, { dataSources, req }) {
+        const token = req.headers.authorization;
+        const user = await AuthUtil().verifyToken(token);
+        try {
+          if (!postId) {
+            return generateResponse(true, 'Something went wrong while validating your request', 'inputParamsValidationFailed', 403, null);
+          }
+
+          const response = await dataSources.PostAPI().checkPostRepostStatus(user.userId, postId);
+          return response;
+        } catch (error) {
+          logError(error.message, 'checkPostRepostStatusError', 5, error, { args: req.body?.variables });
+          return generateResponse(true, `Something went wrong while checking post repost status. We're working on it`, 'checkPostRepostStatusError', 500, null);
+        }
+      },
+    });
   },
 });
